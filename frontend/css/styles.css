@@ -1,0 +1,156 @@
+/* frontend/css/styles.css */
+
+/* --- TEMA PERSONALIZADO --- */
+:root {
+    /* Tema Claro */
+    --c-primary: #000344ca;
+    --c-primary-hover: #01077cca;
+    --c-bg-page: #f8fafc;
+    --c-bg-card: rgba(216, 215, 215, 0.787);
+    --c-text-primary: #252527;
+    --c-text-secondary: #000000;
+    --c-link: #2563eb;
+    --c-border: #84848475;
+    --c-border-focus: #5e5c5c;
+    --c-danger: #fc0000;
+    --c-success: #22c55e;
+    --c-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.223);
+}
+
+.dark {
+    --c-primary: #5951ffc0;
+    --c-primary-hover: #3d12be;
+    --c-bg-page: #555555;
+    --c-bg-card: rgba(28, 30, 34, 0.7);
+    --c-text-primary: #ffffff;
+    --c-text-secondary: #d1cfcf;
+    --c-link: #60a5fa;
+    --c-border: rgba(50, 50, 50, 0.558);
+    --c-border-focus: #5951ffc0;
+    --c-danger: #ff0000;
+    --c-success: #4ade80;
+    --c-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: var(--c-bg-page);
+    color: var(--c-text-primary);
+    transition: background-color 0.2s, color 0.2s; 
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.card, .modal-content, aside, header {
+    background-color: var(--c-bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--c-border);
+    box-shadow: var(--c-shadow);
+}
+
+.modal { 
+    display: none; position: fixed; z-index: 1000; inset: 0; 
+    background-color: rgba(17, 24, 39, 0.3);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; 
+} 
+
+.modal-content {
+    border-radius: 12px;
+    width: 95%;
+    max-width: 800px;
+    padding: 1.5rem 2rem;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.view-container { display: none; } .view-container.active { display: block; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 500; transition: all 0.2s; border: 1px solid transparent; cursor: pointer; }
+.btn svg { width: 1.125rem; height: 1.125rem; }
+.btn-primary { background-color: var(--c-primary); color: white; box-shadow: 0 4px 14px 0 color-mix(in srgb, var(--c-primary) 35%, transparent); }
+.btn-primary:hover { background-color: var(--c-primary-hover); }
+.btn-danger { background-color: var(--c-danger); color: white; }
+.btn-danger:hover { filter: brightness(1.1); }
+.btn-secondary { background-color: color-mix(in srgb, var(--c-bg-card) 50%, transparent) ; color: var(--c-text-secondary); border-color: var(--c-border); }
+.btn-secondary:hover { background-color: var(--c-bg-page); color: var(--c-text-primary); border-color: var(--c-border-focus); }
+.btn-success { background-color: var(--c-success); color: white; }
+.btn-success:hover { filter: brightness(1.1); }
+.btn-disabled { cursor: not-allowed; background-color: var(--c-border); color: var(--c-text-secondary); opacity: 0.7; }
+
+input, select, textarea {
+    background-color: var(--c-bg-page); border: 1px solid var(--c-border);
+    color: var(--c-text-primary); border-radius: 8px; padding: 0.6rem 0.75rem; transition: all 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--c-border-focus);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-border-focus) 20%, transparent);
+}
+
+#main-nav a { color: var(--c-text-secondary); transition: all 0.2s; display: flex; align-items: center; border-radius: 8px; }
+#main-nav a svg { width: 1.25rem; height: 1.25rem; margin-right: 0.75rem; }
+#main-nav a.active-nav-link { background-color: var(--c-primary); color: white; }
+#main-nav a:not(.active-nav-link):hover { background-color: color-mix(in srgb, var(--c-primary) 20%, transparent); color: var(--c-text-primary); }
+
+table thead { background-color: transparent; }
+table th { color: var(--c-text-secondary); font-weight: 600; }
+#tabelaItensCorpo tr:hover, #tabelaUsuariosCorpo tr:hover, #maintenance-history-list tr:hover { background-color: color-mix(in srgb, var(--c-primary) 10%, transparent); }
+.border-t, .border-b, .divide-y > :not([hidden]) ~ :not([hidden]) { border-color: var(--c-border); }
+
+button[data-action="edit"], button[data-action="edit-user"], button[data-action="edit-maintenance"], button[data-action="view-maintenance"] {
+    color: var(--c-link);
+    transition: filter 0.2s;
+}
+button[data-action="edit"]:hover, button[data-action="edit-user"]:hover, button[data-action="edit-maintenance"]:hover, button[data-action="view-maintenance"]:hover {
+    filter: brightness(1.2);
+}
+
+.required-label::after {
+    content: '*';
+    color: var(--c-danger);
+    margin-left: 4px;
+}
+
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 1s linear infinite; }
+
+/* Estilos para o Dropdown de Ações em Lote */
+.dropdown { position: relative; display: inline-block; }
+.dropdown-content {
+    visibility: hidden; /* Em vez de display: none */
+    opacity: 0;
+    transform: translateY(8px); /* Efeito suave de "subir" */
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out, visibility 0s 150ms; /* Atraso para esconder */
+    position: absolute;
+    bottom: 100%; /* Posiciona acima do botão */
+    left: 0;
+    background-color: var(--c-bg-card);
+    border: 1px solid var(--c-border);
+    min-width: 220px;
+    box-shadow: var(--c-shadow);
+    z-index: 1;
+    border-radius: 8px;
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+}
+.dropdown-content button {
+    color: var(--c-text-primary);
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    gap: 0.75rem;
+}
+.dropdown-content button:hover { background-color: color-mix(in srgb, var(--c-primary) 10%, transparent); }
+.dropdown:hover .dropdown-content {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0s; /* Garante que apareça imediatamente ao passar o mouse */
+}

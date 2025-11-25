@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syo.Patrimônio</title>
+    <link rel="icon" href="data:,">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/imask"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <div id="authSection" class="flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-md p-8 rounded-xl card">
+            <h2 class="text-3xl font-bold text-center mb-2" style="color: var(--c-text-primary);">Syo.Patrimônio</h2>
+            <p class="text-center text-sm mb-8" style="color: var(--c-text-secondary);">Acesse sua conta para continuar.</p>
+            <form id="formLogin" autocomplete="off" class="space-y-6">
+                <div><label for="loginUser" class="block text-sm font-medium mb-1" style="color: var(--c-text-secondary);">Utilizador</label><input type="text" id="loginUser" autocomplete="off" required class="w-full"></div>
+                <div><label for="loginSenha" class="block text-sm font-medium mb-1" style="color: var(--c-text-secondary);">Senha</label><input type="password" id="loginSenha" autocomplete="new-password" required class="w-full"></div>
+                <button type="submit" class="btn btn-primary w-full !py-2.5">Entrar</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="appContent" class="hidden h-screen">
+        <div class="flex h-full">
+            <aside class="flex-shrink-0 w-64 flex flex-col border-r !rounded-none">
+                <div class="h-16 flex-shrink-0 flex items-center justify-center px-4 border-b" style="border-color: var(--c-border);"><h1 class="text-xl font-bold" style="color: var(--c-primary);">Syo.Patrimônio</h1></div>
+                <nav id="main-nav" class="flex-1 flex flex-col overflow-y-auto">
+                    <ul class="flex-1 px-3 py-4 space-y-1">
+                        <li><a href="#" data-view="dashboard" class="px-3 py-2 text-sm font-medium"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-dashboard" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 13m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M13.45 11.55l2.05 -2.05" /><path d="M6.4 20a9 9 0 1 1 11.2 0z" /></svg>Dashboard</a></li>
+                        <li><a href="#" data-view="patrimonios" class="px-3 py-2 text-sm font-medium"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v2a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M5 10v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" /><path d="M10 14h4" /></svg>Patrimônios</a></li>
+                        <li><a href="#" data-view="termos" class="px-3 py-2 text-sm font-medium"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-text" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 9h6" /><path d="M9 13h6" /><path d="M9 17h6" /></svg>Termo de Resp.</a></li>
+                        <li><a href="#" data-view="users" class="px-3 py-2 text-sm font-medium"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>Usuários</a></li>
+                    </ul>
+                </nav>
+                 <div class="p-4 border-t" style="border-color: var(--c-border);">
+                    <div class="flex items-center group w-full">
+                        <button id="userAvatarBtn" title="Clique para alterar o avatar">
+                            <img class="h-10 w-10 rounded-full object-cover" id="userAvatarImg" src="/public/usuario.png" alt="Avatar do usuário">
+                        </button>
+                        <input type="file" id="avatarUploadInput" class="hidden" accept="image/png, image/jpeg">
+                        <div class="ml-3">
+                            <p id="userNameDisplay" class="text-sm font-medium" style="color: var(--c-text-primary);"></p>
+                            <a href="#" id="btnLogout" class="text-xs font-medium" style="color: var(--c-text-secondary);">Sair</a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="flex-1 flex flex-col overflow-hidden">
+                <header class="flex-shrink-0 h-16 flex items-center justify-between px-6 border-b !rounded-none">
+                    <div><h2 id="pageTitle" class="text-xl font-semibold" style="color: var(--c-text-primary);"></h2></div>
+                    <div class="flex items-center space-x-4">
+                        <div id="header-buttons" style="display: none;" class="flex items-center space-x-2">
+                            <button id="btnAlterarResponsavel" class="btn btn-secondary"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h3.5" /><path d="M18.42 15.61a2.1 2.1 0 0 1 2.97 2.97l-3.39 3.42h-3v-3l3.42 -3.39z" /></svg>Alterar Detalhes</button>
+                            <button id="btnNovoItem" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>Novo Item</button>
+                        </div>
+                        <button id="darkModeToggle" class="p-2 rounded-md" style="color: var(--c-text-secondary);" title="Alterar Tema">
+                            <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>
+                            <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sun hidden" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>
+                        </button>
+                    </div>
+                </header>
+                
+                <main class="flex-1 overflow-y-auto p-6">
+                    <div class="max-w-7xl mx-auto">
+                        <div id="view-dashboard" class="view-container"></div>
+                        <div id="view-patrimonios" class="view-container"></div>
+                        <div id="view-termos" class="view-container"></div>
+                        <div id="view-users" class="view-container"></div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <div id="userContent" class="hidden h-screen">
+        <header class="flex-shrink-0 h-16 flex items-center justify-between px-6 border-b !rounded-none">
+            <h1 class="text-xl font-bold" style="color: var(--c-primary);">Syo.Patrimônio</h1>
+            <div class="flex items-center space-x-4">
+                <button id="darkModeToggleUser" class="p-2 rounded-md" style="color: var(--c-text-secondary);" title="Alterar Tema">
+                    <svg id="moon-icon-user" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-moon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>
+                    <svg id="sun-icon-user" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-sun hidden" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>
+                </button>
+                <a href="#" id="btnLogoutUser" class="text-sm font-medium hover:underline" style="color: var(--c-text-secondary);">Sair</a>
+            </div>
+        </header>
+        <main class="flex-1 overflow-y-auto p-6">
+             <div class="max-w-4xl mx-auto p-6 card rounded-lg">
+                <h2 class="text-xl font-semibold mb-4">Pesquisa Simplificada de Patrimônio</h2>
+                <form id="formPesquisaSimplificada" class="flex flex-col sm:flex-row gap-4 mb-6">
+                    <select id="tipoPesquisaSimplificada" class="w-full sm:w-1/3"></select>
+                    <input type="text" id="termoPesquisaSimplificada" placeholder="Digite o termo para a busca" class="flex-grow">
+                    <button type="submit" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>Pesquisar</button>
+                </form>
+                <div id="loadingIndicatorUser" class="hidden w-5 h-5 border-2 rounded-full animate-spin mx-auto my-4" style="border-color: var(--c-border); border-top-color: var(--c-primary);"></div>
+                <div id="resultadosPesquisaSimplificada"></div>
+             </div>
+        </main>
+    </div>
+
+    <div id="messageModal" class="modal"></div>
+    <div id="addItemModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Adicionar Novo Item</h2><form id="formAdicionarItem"></form></div></div>
+    <div id="editItemModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Ficha do Patrimônio</h2><form id="formEditarItem"></form></div></div>
+    <div id="alterarResponsavelModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Alterar Detalhes do Item</h2><div id="alterarResponsavelContent"></div></div></div>
+    <div id="importModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-4 text-center">Importar Itens via CSV</h2><div id="importErrors" class="hidden my-4 p-3 bg-red-100 text-red-800 border border-red-300 rounded-lg overflow-y-auto max-h-40"></div><div class="text-sm p-4 rounded-lg" style="background-color: color-mix(in srgb, var(--c-primary) 10%, transparent); color: var(--c-text-primary); border: 1px solid var(--c-border)"><p class="font-bold">Instruções:</p><ul class="list-disc list-inside mt-2"><li>O arquivo deve ser um CSV com cabeçalhos.</li><li>Colunas esperadas (mínimo): `item` (ou `nome`, `descricao`) e `patrimonio` (ou `etiqueta`).</li><li>Outras colunas como `setor`, `marca`, `modelo`, `valor`, `responsavel_nome` serão importadas se existirem.</li></ul></div><form id="formImportar" class="mt-6"><input type="file" id="csvFileInput" name="csvfile" accept=".csv" required><div class="flex justify-end gap-4 mt-6"><button type="button" class="btn btn-secondary close-modal">Cancelar</button><button type="submit" class="btn btn-success">Importar</button></div></form></div></div>
+    <div id="addUserModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Adicionar Novo Usuário</h2><form id="formAdicionarUser"><div class="mb-4"><label for="addUsername" class="block mb-1">Nome de Usuário:</label><input type="text" id="addUsername" name="username" required class="w-full"></div><div class="mb-4"><label for="addPassword" class="block mb-1">Senha:</label><input type="password" id="addPassword" name="password" required class="w-full"></div><div class="mb-4"><label for="addRole" class="block mb-1">Permissão (Role):</label><select id="addRole" name="role" required class="w-full"><option value="user">Usuário Comum</option><option value="admin">Administrador</option></select></div><div class="flex justify-end gap-4 mt-6"><button type="button" class="btn btn-secondary close-modal">Cancelar</button><button type="submit" class="btn btn-success">Salvar</button></div></form></div></div>
+    <div id="editUserModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Editar Usuário</h2><form id="formEditarUser"><input type="hidden" id="editUserId" name="id"><p class="mb-4">Editando usuário: <strong id="editingUsername"></strong></p><div class="mb-4"><label for="editPassword" class="block mb-1">Nova Senha (deixe em branco para não alterar):</label><input type="password" id="editPassword" name="password" class="w-full"></div><div class="mb-4"><label for="editRole" class="block mb-1">Permissão (Role):</label><select id="editRole" name="role" required class="w-full"><option value="user">Usuário Comum</option><option value="admin">Administrador</option></select></div><div class="flex justify-end gap-4 mt-6"><button type="button" class="btn btn-secondary close-modal">Cancelar</button><button type="submit" class="btn btn-success">Salvar Alterações</button></div></form></div></div>
+    <div id="termoDataModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Complementar Informações para o Termo</h2><form id="formTermoData"></form></div></div>
+    
+    <div id="addMaintenanceModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Registrar Nova Manutenção</h2><form id="formAddMaintenance"></form></div></div>
+    <div id="editMaintenanceModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Atualizar Registro de Manutenção</h2><form id="formEditMaintenance"></form></div></div>
+    <div id="viewMaintenanceModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span>
+            <h2 class="text-xl font-semibold mb-6 text-center">Detalhes da Manutenção</h2>
+            <div id="viewMaintenanceContent" class="space-y-3"></div>
+            <div class="flex justify-end gap-4 mt-8">
+                <button type="button" class="btn btn-secondary close-modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="viewHistoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span>
+            <h2 class="text-xl font-semibold mb-6 text-center">Histórico do Item</h2>
+            <div id="viewHistoryContent" class="space-y-3 max-h-[60vh] overflow-y-auto"></div>
+            <div class="flex justify-end gap-4 mt-8">
+                <button type="button" class="btn btn-secondary close-modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="bulkChangeSectorModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Mover Itens para Setor</h2><p class="text-center text-sm mb-4" style="color: var(--c-text-secondary);">Selecione o novo setor para os <strong id="bulkSectorCount"></strong> itens selecionados.</p><form id="formBulkChangeSector"><select name="sector" required class="w-full"></select><div class="flex justify-end gap-4 mt-6"><button type="button" class="btn btn-secondary close-modal">Cancelar</button><button type="submit" class="btn btn-primary">Mover</button></div></form></div></div>
+    <div id="bulkChangeStatusModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Alterar Status dos Itens</h2><p class="text-center text-sm mb-4" style="color: var(--c-text-secondary);">Selecione o novo status para os <strong id="bulkStatusCount"></strong> itens selecionados.</p><form id="formBulkChangeStatus"><select name="status" required class="w-full"></select><div class="flex justify-end gap-4 mt-6"><button type="button" class="btn btn-secondary close-modal">Cancelar</button><button type="submit" class="btn btn-primary">Alterar</button></div></form></div></div>
+    <div id="bulkAssignResponsibleModal" class="modal"><div class="modal-content"><span class="close-modal absolute top-4 right-5 text-2xl font-bold cursor-pointer" style="color: var(--c-text-secondary);">&times;</span><h2 class="text-xl font-semibold mb-6 text-center">Atribuir Responsável</h2><p class="text-center text-sm mb-4" style="color: var(--c-text-secondary);">Digite o novo responsável para os <strong id="bulkResponsibleCount"></strong> itens selecionados.</p><form id="formBulkAssignResponsible" class="space-y-4"><div><label class="block text-sm mb-1">Nome do Responsável</label><input type="text" name="name" class="w-full" placeholder="Deixe em branco para remover"></div><div><label class="block text-sm mb-1">E-mail do Responsável</label><input type="email" name="email" class="w-full"></div><div class="flex justify-end gap-4 mt-6"><button type="button" class="btn btn-secondary close-modal">Cancelar</button><button type="submit" class="btn btn-primary">Atribuir</button></div></form></div></div>
+
+    <div id="pdf-template-container" style="display: none; visibility: hidden;"></div>
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50"></div>
+    
+    <script type="module" src="./js/app.js"></script>
+</body>
+</html>

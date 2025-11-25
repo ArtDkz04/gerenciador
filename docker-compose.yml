@@ -1,0 +1,55 @@
+# docker-compose.yml (CORRIGIDO)
+
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: patrimonio_postgres_db
+    environment:
+      POSTGRES_USER: gestor
+      POSTGRES_PASSWORD: senha_forte
+      POSTGRES_DB: patrimonios_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "8081:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gestor -d patrimonios_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    container_name: patrimonio_backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    expose:
+      - "3000"
+    environment:
+      DATABASE_URL: postgres://gestor:senha_forte@db:5432/patrimonios_db
+      JWT_SECRET: 'seu-segredo-super-longo-e-aleatorio-aqui'
+      PORT: 3000
+    volumes:
+      - ./backend/public:/app/public
+
+  frontend:
+    image: nginx:alpine
+    container_name: patrimonio_frontend_web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html/frontend   # Mapeia a pasta do seu site
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf # Aplica a configuração do Nginx
+      # --- LINHA ADICIONADA ---
+      # Compartilha a pasta de uploads do backend com o Nginx para que ele possa servir os arquivos
+      - ./backend/public:/usr/share/nginx/html/public
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

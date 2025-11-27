@@ -3,6 +3,9 @@
 # Use uma imagem base do Node.js leve e segura
 FROM node:18-alpine
 
+# Instala o cliente do postgres (necessário para o comando pg_dump funcionar)
+RUN apk add --no-cache postgresql-client
+
 # Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
@@ -10,7 +13,6 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instala as dependências da aplicação
-# Use --only=production em um ambiente de produção real para não instalar dependências de desenvolvimento
 RUN npm install
 
 # Copia todos os outros arquivos da aplicação (incluindo server.js e create-admin.js)

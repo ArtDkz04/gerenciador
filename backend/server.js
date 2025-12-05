@@ -80,18 +80,20 @@ const uploadInvoice = multer({
     }
 });
 
-// Configuração para Upload de Backups (NOVO)
+// Configuração para Upload de Backups
 const backupStorage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, backupsDir),
     filename: (req, file, cb) => {
         // Sanitiza o nome para evitar caracteres perigosos, mas mantém a extensão
+        const uniqueSuffix = Date.now();
+        // Preserva o nome original se for um upload, mas garante segurança
         const sanitized = file.originalname.replace(/[^a-zA-Z0-9.-]/g, '_');
         cb(null, sanitized);
     }
 });
 const uploadBackupFile = multer({
     storage: backupStorage,
-    limits: { fileSize: 100 * 1024 * 1024 }, // Limite de 100MB
+    limits: { fileSize: 200 * 1024 * 1024 }, // Aumentado para 200MB
     fileFilter: (req, file, cb) => {
         // Aceita .bz2 (padrão do sistema) ou .sql (caso venha descompactado)
         if (file.originalname.endsWith('.bz2') || file.originalname.endsWith('.sql')) {
@@ -290,7 +292,7 @@ const apenasAdmin = (req, res, next) => {
 };
 
 // ==========================================
-// ROTAS DE BACKUP
+// ROTAS DE BACKUP (MODIFICADO PARA SUPORTE TOTAL)
 // ==========================================
 
 const performBackup = () => {
@@ -299,14 +301,17 @@ const performBackup = () => {
         const filename = `backup-${timestamp}.sql.bz2`;
         const filepath = path.join(backupsDir, filename);
 
-        // Importante: PGPASSWORD e outras vars estão definidas no docker-compose.yml
-        const command = `pg_dump -h ${process.env.DB_HOST} -U ${process.env.DB_USER} ${process.env.POSTGRES_DB} | bzip2 > "${filepath}"`;
+        // ALTERAÇÃO IMPORTANTE: Adicionado --clean --if-exists
+        // Isso garante que ao restaurar, ele limpe o banco antes de inserir os dados.
+        // Isso preserva a integridade e evita erros de duplicação.
+        const command = `pg_dump -h ${process.env.DB_HOST} -U ${process.env.DB_USER} --clean --if-exists ${process.env.POSTGRES_DB} | bzip2 > "${filepath}"`;
 
         exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.error(`Erro ao fazer backup: ${error.message}`);
                 return reject(error);
             }
+            // pg_dump pode escrever avisos no stderr, isso não é necessariamente erro fatal
             if (stderr) console.log(`Log backup (stderr): ${stderr}`);
             
             resolve({ 
@@ -333,7 +338,7 @@ cron.schedule('0 0 * * *', async () => {
 app.post('/api/backups', apenasAdmin, async (req, res, next) => {
     try {
         const result = await performBackup();
-        res.json({ success: true, message: 'Backup criado com sucesso.', data: result });
+        res.json({ success: true, message: 'Backup completo criado com sucesso.', data: result });
     } catch (e) {
         res.status(500).json({ message: 'Erro ao criar backup.' });
     }
@@ -392,11 +397,12 @@ app.delete('/api/backups/:filename', apenasAdmin, (req, res) => {
 });
 
 // Importar (Upload) Backup Externo
+// Esta rota salva o arquivo na pasta de backups. O usuário deve então chamar /restore.
 app.post('/api/backups/import', apenasAdmin, uploadBackupFile.single('backup'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ message: 'Nenhum arquivo enviado.' });
     }
-    res.json({ success: true, message: 'Backup importado com sucesso!' });
+    res.json({ success: true, message: 'Backup importado com sucesso! Clique em "Restaurar" na lista para aplicá-lo.' });
 });
 
 // Restaurar Backup
@@ -409,6 +415,7 @@ app.post('/api/backups/:filename/restore', apenasAdmin, async (req, res) => {
 
     try {
         // 1. Derrubar conexões existentes para permitir o drop/restore
+        // Isso é crucial para que o script --clean funcione
         await pool.query(`
             SELECT pg_terminate_backend(pg_stat_activity.pid)
             FROM pg_stat_activity
@@ -426,13 +433,16 @@ app.post('/api/backups/:filename/restore', apenasAdmin, async (req, res) => {
             command = `psql ${dbCreds} < "${filepath}"`;
         }
 
+        console.log(`Iniciando restauração do arquivo: ${filename}`);
+
         // 3. Executar
         exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.error('Erro no restore:', stderr);
-                return res.status(500).json({ message: 'Falha ao restaurar banco de dados.' });
+                return res.status(500).json({ message: 'Falha ao restaurar banco de dados. Verifique os logs.' });
             }
-            res.json({ success: true, message: 'Sistema restaurado com sucesso! Por favor, faça login novamente.' });
+            console.log('Restauração concluída.');
+            res.json({ success: true, message: 'Sistema restaurado completamente! Por favor, faça login novamente.' });
         });
     } catch (e) {
         console.error(e);
